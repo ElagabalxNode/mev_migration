@@ -74,14 +74,14 @@ if [ "$answer" == "yes" ]; then
 
     if [ -f "$file" ]
     then
-    sed -i 's|ExecStart.*|ExecStart='"$HOME"'/.local/share/solana/install/releases/'"$TAG"'/bin/solana-validator \\\n--tip-payment-program-pubkey T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt \\\n--tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \\\n--merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \\\n--commission-bps 800 \\\n--relayer-url '"${RELAYER_URL}"':8100 \\\n--block-engine-url '"${BLOCK_ENGINE_URL}"' \\\n--shred-receiver-address '"${SHRED_RECEIVER_ADDR}"' \\|g' "$file"
+    sudo sed -i 's|ExecStart.*|ExecStart='"$HOME"'/.local/share/solana/install/releases/'"$TAG"'/bin/solana-validator \\\n--tip-payment-program-pubkey T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt \\\n--tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \\\n--merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \\\n--commission-bps 800 \\\n--relayer-url '"${RELAYER_URL}"' \\\n--block-engine-url '"${BLOCK_ENGINE_URL}"' \\\n--shred-receiver-address '"${SHRED_RECEIVER_ADDR}"' \\|g' "$file"
     echo "The ExecStart line in $file has been successfully modified."
     else
     echo "$file not found."
     fi
 
-    systemctl daemon-reload
-    systemctl restart solana-validator
+    sudo systemctl daemon-reload
+    sudo systemctl restart solana-validator
 
 else
   echo "Script execution has been cancelled."
