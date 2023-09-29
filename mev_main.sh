@@ -85,8 +85,11 @@ if [ "$answer" == "yes" ]; then
         fi
     else
         echo "No changes will be made to the service file."
+    fi
 
     sudo systemctl daemon-reload
     sudo systemctl restart solana-validator
+    echo "Script execution has been completed."
+else
     echo "Script execution has been cancelled."
-    fi
+fi
