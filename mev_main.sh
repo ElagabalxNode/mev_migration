@@ -89,3 +89,4 @@ if [ "$answer" == "yes" ]; then
     sudo systemctl daemon-reload
     sudo systemctl restart solana-validator
     echo "Script execution has been cancelled."
+    fi
