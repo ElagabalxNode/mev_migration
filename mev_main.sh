@@ -42,7 +42,7 @@ if [ "$answer" == "yes" ]; then
 
     # Install dependencies
     echo "Version tag: v1.13.6-jito"
-    TAG=1.16.14-jito
+    TAG="1.16.14-jito"
 
     curl https://sh.rustup.rs -sSf | sh
     source $HOME/.cargo/env
