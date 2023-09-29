@@ -35,6 +35,7 @@ if [ "$answer" == "yes" ]; then
     else
     echo "Invalid selection. Exiting."
     exit 1
+    
     fi
 
     # Update packages
@@ -60,29 +61,31 @@ if [ "$answer" == "yes" ]; then
     git submodule update --init --recursive
     CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh ~/.local/share/solana/install/releases/"$TAG"
 
-    echo "Enter the service name of your validator:"
-    read service_name
+    echo "Want to change service file? (yes/no)"
+    read answerd
 
-    # Stop the service
-    sudo systemctl stop $service_name.service
-
-    # Backup the service
-    sudo cp /etc/systemd/system/$service_name.service /etc/systemd/system/${service_name}1.service
-
-    # Replace the ExecStart line in the service file
-    file=/etc/systemd/system/${service_name}.service
-
-    if [ -f "$file" ]
-    then
-    sudo sed -i 's|ExecStart.*|ExecStart='"$HOME"'/.local/share/solana/install/releases/'"$TAG"'/bin/solana-validator \\\n--tip-payment-program-pubkey T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt \\\n--tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \\\n--merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \\\n--commission-bps 800 \\\n--relayer-url '"${RELAYER_URL}"' \\\n--block-engine-url '"${BLOCK_ENGINE_URL}"' \\\n--shred-receiver-address '"${SHRED_RECEIVER_ADDR}"' \\|g' "$file"
-    echo "The ExecStart line in $file has been successfully modified."
+    if [ "$answerd" == "yes" ]; then
+        echo "Enter the service name of your validator:"
+        read service_name
+    
+        # Stop the service
+        sudo systemctl stop $service_name.service
+    
+        # Backup the service
+        sudo cp /etc/systemd/system/$service_name.service /etc/systemd/system/${service_name}1.service
+    
+        # Replace the ExecStart line in the service file
+        file=/etc/systemd/system/${service_name}.service
+    
+        if [ -f "$file" ]; then
+            sudo sed -i 's|ExecStart.*|ExecStart='"$HOME"'/.local/share/solana/install/releases/'"$TAG"'/bin/solana-validator \\\n--tip-payment-program-pubkey T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt \\\n--tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \\\n--merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \\\n--commission-bps 800 \\\n--relayer-url '"${RELAYER_URL}"' \\\n--block-engine-url '"${BLOCK_ENGINE_URL}"' \\\n--shred-receiver-address '"${SHRED_RECEIVER_ADDR}"' \\|g' "$file"
+            echo "The ExecStart line in $file has been successfully modified."
+        else
+            echo "$file not found."
+        fi
     else
-    echo "$file not found."
-    fi
+        echo "No changes will be made to the service file."
 
     sudo systemctl daemon-reload
     sudo systemctl restart solana-validator
-
-else
-  echo "Script execution has been cancelled."
-fi
+    echo "Script execution has been cancelled."
